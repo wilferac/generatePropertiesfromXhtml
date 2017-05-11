@@ -13,9 +13,11 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Archivo {
+public class ProcessFile{
 	private String filePath;
 	private String propertiesFileName;
+	private String propetiesAlias;
+	
 	private static final Pattern[] patrones = new Pattern[] {
 		Pattern.compile(".*<h:outputText.*value=\"([^\"^#]*)\".*"),
 		Pattern.compile(".*<p:commandButton.*value=\"([^\"^#]*)\".*"),
@@ -29,11 +31,13 @@ public class Archivo {
 	private Map<String, String> propertiesContent;
 	private StringBuilder newFileContent;
 	
-	public Archivo(String filePath, String propertiesFileName){
+	public ProcessFile(String filePath, String propertiesFileName, String propetiesAlias){
 		this.filePath = filePath;
 		this.propertiesFileName = propertiesFileName;
+		this.propetiesAlias = propetiesAlias;
+		
 		try {
-			analiceFile();
+			AnalyzeFile();
 			writeNewFiles();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -49,7 +53,7 @@ public class Archivo {
 	* @date 05/04/2017
 	* @description Analizar el archivo y reemplazar las coincidencias de los labels
 	 */
-	private void analiceFile() throws IOException {
+	private void AnalyzeFile() throws IOException {
 		propertiesContent = new LinkedHashMap<String, String>();
 		Scanner keyboard = new Scanner(System.in);
 		newFileContent = new StringBuilder();
@@ -77,7 +81,8 @@ public class Archivo {
 							key = propertiesContent.get(value); //reutilizar el key
 						}
 						
-						newFileContent.append(new StringBuilder(sCurrentLine).replace(matcher.start(1), matcher.end(1), key)); //cambiar la fila en el archivo original
+						newFileContent.append(new StringBuilder(sCurrentLine)
+							.replace(matcher.start(1), matcher.end(1), "#{"+propetiesAlias+"."+key+"}")); //cambiar la fila en el archivo original
 						newFileContent.append("\n");
 						addLine = false;
 						break;
@@ -112,7 +117,6 @@ public class Archivo {
 		}
 		
 	    writer.close();
-		
 	}
 	
 }
