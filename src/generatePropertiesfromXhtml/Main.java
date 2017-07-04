@@ -1,9 +1,24 @@
 package generatePropertiesfromXhtml;
 
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 public class Main {
 
 	public static void main(String[] args) {
-		ProcessFile ar = new ProcessFile("F:\\SAO_Ambiente\\git\\sao\\mso\\mso-web\\src\\main\\webapp\\pages\\forms\\cuenta\\cierre.xhtml", "test.properties", "msgCierre");
+		String fileOut = "CopagoCups";
+
+		JFileChooser chooser = new JFileChooser();
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("XHTML", "xhtml");
+		chooser.setFileFilter(filter);
+		int returnVal = chooser.showOpenDialog(null);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
+		}
+
+		String file = chooser.getSelectedFile().getAbsolutePath();
+
+		Archivo ar = new Archivo(file, "msg-" + fileOut + ".properties", "msg" + fileOut);
 	}
 
 }
